@@ -12,6 +12,8 @@ const PORT = process.env.PORT || 3000;
 const app: Application = express();
 app.use(bodyParser.json());
 
+app.use('/api/*', cors);
+
 app.route('/api/login').post(loginUser);
 
 app.route('/api/courses').get(getAllCourses);
@@ -26,3 +28,18 @@ const httpServer = app.listen(9300, () => {
   const address: AddressInfo = httpServer.address() as AddressInfo;
   console.log('HTTP REST API Server running at http://localhost:' + address.port);
 });
+
+function cors(req, res, next) {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    // For security
+    // res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Headers', 'Accept, Content-Type');
+  }
+
+  next();
+}
